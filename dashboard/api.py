@@ -1,14 +1,15 @@
+import sys, os
+sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-import json
-import os
+from backend import sqlite_store
+
+sqlite_store.init_db()
 
 app = FastAPI()
 app.add_middleware(CORSMiddleware, allow_origins=["*"], allow_methods=["*"], allow_headers=["*"])
 
-SAMPLE_PATH = os.path.join(os.path.dirname(__file__), "sample_data.json")
-
 @app.get("/api/timeline")
 def timeline():
-    with open(SAMPLE_PATH) as f:
-        return json.load(f)
+    return sqlite_store.get_all()
